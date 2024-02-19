@@ -17,17 +17,10 @@ pipeline {
     }
 
     stages {
-
-
-        stage ('Authentication') {
+        stage ('Deploy App') {
             steps {
                 sh "aws ecr get-login-password --region ${AWS_DEFAULT_REGION} | docker login --username AWS --password-stdin ${AWS_ACCOUNT_ID}.dkr.ecr.${AWS_DEFAULT_REGION}.amazonaws.com"
                 sh "aws eks update-kubeconfig --region ${AWS_DEFAULT_REGION} --name ${eks_cluster_name}"
-            }
-        }
-
-        stage ('Deploy App') {
-            steps {
                 sh "curl -LO https://raw.githubusercontent.com/mrjithendar/tools/master/namespace.sh"
                 sh "sh namespace.sh"
                 sh "kubectl apply -f k8s/redis.yml"
